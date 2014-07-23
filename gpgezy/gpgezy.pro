@@ -42,4 +42,5 @@ RESOURCES += \
     gpgezy.qrc
 
 OTHER_FILES += \
-    database.sql
+    database.sql \
+    files_table.sql

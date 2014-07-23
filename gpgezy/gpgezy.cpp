@@ -7,7 +7,9 @@
 #include "constants.h"
 #include "environment.h"
 #include <QSqlDatabase>
+#include <QSqlQuery>
 #include <QDir>
+#include <QFile>
 #include <QDebug>
 
 Gpgezy::Gpgezy(QObject *parent) :
@@ -84,9 +86,9 @@ void Gpgezy::createWorkingEnvirnment()
         if (db.isValid()) {
             db.setDatabaseName(dbFilePath);
 
-            if (db.open()) {
-                // TODO: check db and create tables if there are no exists
-            } else {
+            if (db.open())
+                createTables(db);
+            else {
                 qWarning() << tr("can't open database");
                 finishWork(EXIT_CODEC_DB_OPENING_FAILED);
             }
@@ -98,6 +100,18 @@ void Gpgezy::createWorkingEnvirnment()
         qWarning() << tr("data base file path is empty");
         finishWork(EXIT_CODE_DB_FILE_PATH_IS_EMPTY);
     }
+}
+
+void Gpgezy::createTables(QSqlDatabase &db)
+{
+    QFile file(":/files/files_table.sql");
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+    QSqlQuery query(db);
+    query.exec(file.readAll());
+    file.close();
+    file.setFileName(":/files/key_files_table.sql");
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+    query.exec(file.readAll());
 }
 
 void Gpgezy::showWarningAndFinish(const QString& warning, int exitCode)

@@ -5,6 +5,8 @@
 #include "actionsfactory.h"
 #include <memory>
 
+class QSqlDatabase;
+
 class Gpgezy : public QObject
 {
     Q_OBJECT
@@ -17,6 +19,7 @@ protected Q_SLOTS:
     virtual void finishWork(int exitCode = 0);
 private:
     void createWorkingEnvirnment();
+    void createTables(QSqlDatabase& db);
     void showWarningAndFinish(const QString& warning, int exitCode);
 
     std::auto_ptr<ActionsFactory> factory_;
