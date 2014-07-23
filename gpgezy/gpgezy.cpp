@@ -7,6 +7,7 @@
 #include "constants.h"
 #include "environment.h"
 #include <QSqlDatabase>
+#include <QDir>
 #include <QDebug>
 
 Gpgezy::Gpgezy(QObject *parent) :
@@ -60,17 +61,42 @@ void Gpgezy::createWorkingEnvirnment()
     QString dataDir = Environment::getDataDirectory();
 
     if (!dataDir.isEmpty()) {
+        QDir dir(dataDir);
+
+        if (!dir.exists(dataDir)) {
+
+            if (!dir.mkdir(dataDir)) {
+
+                qWarning() << tr("can't create data directory");
+                finishWork(EXIT_CODE_DATA_DIR_IS_EMPTY);
+            }
+        }
+    } else {
+        qWarning() << tr("data directory is empty!");
+        finishWork(EXIT_CODE_DATA_DIR_IS_EMPTY);
+    }
+
+    QString dbFilePath = Environment::getDatabaseFilePath();
+
+    if (!dbFilePath.isEmpty()) {
         QSqlDatabase db = QSqlDatabase::addDatabase(constants::databaseDriver);
 
         if (db.isValid()) {
+            db.setDatabaseName(dbFilePath);
 
+            if (db.open()) {
+                // TODO: check db and create tables if there are no exists
+            } else {
+                qWarning() << tr("can't open database");
+                finishWork(EXIT_CODEC_DB_OPENING_FAILED);
+            }
         } else {
             qWarning() << tr("could not load database driver");
             finishWork(EXIT_CODE_DB_DRIVER_IS_NOT_LOADED);
         }
     } else {
-        qWarning() << tr("data directory is empty!");
-        finishWork(EXIT_CODE_DATA_DIR_IS_EMPTY);
+        qWarning() << tr("data base file path is empty");
+        finishWork(EXIT_CODE_DB_FILE_PATH_IS_EMPTY);
     }
 }
 

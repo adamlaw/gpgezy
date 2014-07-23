@@ -33,3 +33,13 @@ QString Environment::getDataDirectory()
 
     return QString();
 }
+
+QString Environment::getDatabaseFilePath()
+{
+    QString dataDir = Environment::getDataDirectory();
+
+    if (!dataDir.isEmpty())
+        return dataDir + QDir::separator() + qApp->applicationName() + ".sqlite";
+
+    return QString();
+}

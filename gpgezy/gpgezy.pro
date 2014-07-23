@@ -37,3 +37,9 @@ MOC_DIR = build/moc
 UI_DIR  = build/ui
 OBJECTS_DIR = build/obj
 RCC_DIR = build/obj
+
+RESOURCES += \
+    gpgezy.qrc
+
+OTHER_FILES += \
+    database.sql
