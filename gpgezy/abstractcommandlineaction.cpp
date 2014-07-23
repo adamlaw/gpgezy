@@ -5,7 +5,7 @@ AbstractCommandLineAction::AbstractCommandLineAction(QObject *parent) :
 {
 }
 
-void AbstractCommandLineAction::finishAction()
+void AbstractCommandLineAction::finishAction(int code)
 {
-    Q_EMIT finished();
+    Q_EMIT finished(code);
 }

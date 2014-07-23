@@ -5,8 +5,8 @@
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-    Gpgezy* gpgezy = new Gpgezy(&a);
-    QObject::connect(gpgezy, SIGNAL(finished()), &a, SLOT(quit()));
+    a.setApplicationName("gpgezy");
+    Gpgezy* gpgezy = new Gpgezy(&a);;
     QTimer::singleShot(0, gpgezy, SLOT(start()));
     return a.exec();
 }

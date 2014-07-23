@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core
+QT       += core sql
 
 QT       -= gui
 
@@ -18,9 +18,22 @@ TEMPLATE = app
 SOURCES += main.cpp \
     gpgezy.cpp \
     abstractcommandlineaction.cpp \
-    actionsfactory.cpp
+    actionsfactory.cpp \
+    addkeyaction.cpp \
+    environment.cpp
 
 HEADERS += \
     gpgezy.h \
     abstractcommandlineaction.h \
-    actionsfactory.h
+    actionsfactory.h \
+    addkeyaction.h \
+    constants.h \
+    environment.h
+
+INCLUDEPATH += /Users/iggyjoy/dmitry/qca/include/QtCrypto
+LIBS += -L /Users/iggyjoy/dmitry/qca/lib -lqca
+
+MOC_DIR = build/moc
+UI_DIR  = build/ui
+OBJECTS_DIR = build/obj
+RCC_DIR = build/obj

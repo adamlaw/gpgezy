@@ -2,6 +2,8 @@
 #define GPGEZY_H
 
 #include <QObject>
+#include "actionsfactory.h"
+#include <memory>
 
 class Gpgezy : public QObject
 {
@@ -11,11 +13,13 @@ public:
 public Q_SLOTS:
     void showUsage();
     void start();
-Q_SIGNALS:
-    void finished();
-protected:
-    virtual void finishWork();
+protected Q_SLOTS:
+    virtual void finishWork(int exitCode = 0);
 private:
+    void createWorkingEnvirnment();
+    void showWarningAndFinish(const QString& warning, int exitCode);
+
+    std::auto_ptr<ActionsFactory> factory_;
 };
 
 #endif // GPGEZY_H

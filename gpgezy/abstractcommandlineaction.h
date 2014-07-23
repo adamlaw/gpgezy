@@ -10,13 +10,12 @@ class AbstractCommandLineAction : public QObject
     Q_OBJECT
 public:
     explicit AbstractCommandLineAction(QObject *parent = 0);
-
 Q_SIGNALS:
-    void finished();
+    void finished(int code);
 public Q_SLOTS:
-    virtual void execute(const QStringList& args) = 0;
+    virtual int execute(const QStringList& args) = 0;
 protected:
-    virtual void finishAction();
+    virtual void finishAction(int code = 0);
 };
 
 #endif // ABSTRACTCOMMANDLINEACTION_H

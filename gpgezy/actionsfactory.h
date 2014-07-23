@@ -8,7 +8,8 @@ class QString;
 class ActionsFactory
 {
 public:
-    static AbstractCommandLineAction* createAction(const QString& key, QObject* parent = 0);
+    ActionsFactory();
+    AbstractCommandLineAction* createAction(const QString& key, QObject* parent = 0);
 };
 
 #endif // ACTIONSFACTORY_H
