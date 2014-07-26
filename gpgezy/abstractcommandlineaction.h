@@ -1,21 +1,16 @@
 #ifndef ABSTRACTCOMMANDLINEACTION_H
 #define ABSTRACTCOMMANDLINEACTION_H
 
-#include <QObject>
+#include <QString>
 
 class QStringList;
 
-class AbstractCommandLineAction : public QObject
+class AbstractCommandLineAction
 {
-    Q_OBJECT
 public:
-    explicit AbstractCommandLineAction(QObject *parent = 0);
-Q_SIGNALS:
-    void finished(int code);
-public Q_SLOTS:
+    explicit AbstractCommandLineAction();
+    QString keyFileById(const QString& id);
     virtual int execute(const QStringList& args) = 0;
-protected:
-    virtual void finishAction(int code = 0);
 };
 
 #endif // ABSTRACTCOMMANDLINEACTION_H

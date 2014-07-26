@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/files">
-        <file>key_files_table.sql</file>
-        <file>files_table.sql</file>
+        <file>keys_table.sql</file>
     </qresource>
 </RCC>

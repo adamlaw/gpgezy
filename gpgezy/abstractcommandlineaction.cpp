@@ -1,11 +1,23 @@
 #include "abstractcommandlineaction.h"
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlResult>
+#include <QSqlError>
+#include "constants.h"
+#include <QDebug>
 
-AbstractCommandLineAction::AbstractCommandLineAction(QObject *parent) :
-    QObject(parent)
+AbstractCommandLineAction::AbstractCommandLineAction()
 {
 }
 
-void AbstractCommandLineAction::finishAction(int code)
+QString AbstractCommandLineAction::keyFileById(const QString& /* id */)
 {
-    Q_EMIT finished(code);
+    QSqlDatabase db = QSqlDatabase::database(constants::dbConnectionName);
+    QSqlQuery q(db);
+
+    if (q.exec("SELECT * FROM KEYS")) {
+
+    }
+
+    return QString();
 }

@@ -5,10 +5,8 @@
 
 class AddKeyAction : public AbstractCommandLineAction
 {
-    Q_OBJECT
 public:
-    AddKeyAction(QObject* parent = 0);
-public Q_SLOTS:
+    AddKeyAction();
     virtual int execute(const QStringList& args);
 };
 

@@ -11,6 +11,8 @@
 #include <QDir>
 #include <QFile>
 #include <QDebug>
+#include <algorithm>
+#include <memory>
 
 Gpgezy::Gpgezy(QObject *parent) :
     QObject(parent), factory_( new ActionsFactory() )
@@ -29,16 +31,18 @@ void Gpgezy::start()
 
     if (args.length() > 1) {
         // ignore app executable
-        QStringList::const_iterator current = ++ args.begin();
+        QStringList::iterator current = ++ args.begin();
 
         while (current != args.end()) {
 
             if (current->startsWith(constants::commandToken)) {
-                AbstractCommandLineAction* action = factory_->createAction(*current, this);
+                std::auto_ptr<AbstractCommandLineAction> action(factory_->createAction(*current));
 
-                if (action != NULL) {
-                    connect(action, SIGNAL(finished(int)), this, SLOT(finishWork(int)));
-                    finishWork(action->execute(args));
+                if (action.get() != NULL) {
+                    QStringList actionArgs;
+                    // first arg is command name
+                    std::copy(current, args.end(), std::back_inserter(actionArgs));
+                    finishWork(action->execute(actionArgs));
                 } else {
                     qDebug() << tr("Unrecognized command");
                     finishWork(EXIT_CODE_UNRECOGNIZED_COMMAND);
@@ -81,7 +85,7 @@ void Gpgezy::createWorkingEnvirnment()
     QString dbFilePath = Environment::getDatabaseFilePath();
 
     if (!dbFilePath.isEmpty()) {
-        QSqlDatabase db = QSqlDatabase::addDatabase(constants::databaseDriver);
+        QSqlDatabase db = QSqlDatabase::addDatabase(constants::databaseDriver, constants::dbConnectionName);
 
         if (db.isValid()) {
             db.setDatabaseName(dbFilePath);
@@ -104,13 +108,9 @@ void Gpgezy::createWorkingEnvirnment()
 
 void Gpgezy::createTables(QSqlDatabase &db)
 {
-    QFile file(":/files/files_table.sql");
+    QFile file(":/files/keys_table.sql");
     file.open(QIODevice::ReadOnly | QIODevice::Text);
     QSqlQuery query(db);
-    query.exec(file.readAll());
-    file.close();
-    file.setFileName(":/files/key_files_table.sql");
-    file.open(QIODevice::ReadOnly | QIODevice::Text);
     query.exec(file.readAll());
 }
 

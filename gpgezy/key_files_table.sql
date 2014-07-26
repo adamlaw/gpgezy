@@ -1,4 +1,0 @@
-CREATE TABLE KEY_FILES (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    file_path CHAR(512),
-    private INTEGER )

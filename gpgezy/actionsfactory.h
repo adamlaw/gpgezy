@@ -9,7 +9,7 @@ class ActionsFactory
 {
 public:
     ActionsFactory();
-    AbstractCommandLineAction* createAction(const QString& key, QObject* parent = 0);
+    AbstractCommandLineAction* createAction(const QString& key);
 };
 
 #endif // ACTIONSFACTORY_H

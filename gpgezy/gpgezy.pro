@@ -20,7 +20,9 @@ SOURCES += main.cpp \
     abstractcommandlineaction.cpp \
     actionsfactory.cpp \
     addkeyaction.cpp \
-    environment.cpp
+    environment.cpp \
+    encryptcommand.cpp \
+    decryptcommand.cpp
 
 HEADERS += \
     gpgezy.h \
@@ -28,7 +30,9 @@ HEADERS += \
     actionsfactory.h \
     addkeyaction.h \
     constants.h \
-    environment.h
+    environment.h \
+    encryptcommand.h \
+    decryptcommand.h
 
 INCLUDEPATH += /Users/iggyjoy/dmitry/qca/include/QtCrypto
 LIBS += -L /Users/iggyjoy/dmitry/qca/lib -lqca
