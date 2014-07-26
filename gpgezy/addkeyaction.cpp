@@ -1,14 +1,13 @@
 #include "addkeyaction.h"
 #include <QFileInfo>
-#include <QDebug>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QSqlRecord>
 #include <QtCrypto>
+#include <QFile>
+#include <QDebug>
 #include "constants.h"
-
-#include <Windows.h>
 
 AddKeyAction::AddKeyAction()
 {
@@ -24,31 +23,32 @@ int AddKeyAction::execute(const QStringList& args)
             QFileInfo info(*current);
 
             if (info.exists()) {
-                QCA::PGPKey key(info.absoluteFilePath().toLatin1());
-				OutputDebugString(L"\n\n");
+                QFile file(info.absoluteFilePath());
+                file.open(QIODevice::ReadOnly | QIODevice::Text);
+                QByteArray data = file.readAll();
+                QCA::PGPKey key = QCA::PGPKey::fromArray(data);
 
-				if (key.isNull())
-					OutputDebugString(L"key is null == true");
-				else
-					OutputDebugString(L"key is null == false");
-
-				OutputDebugString(L"\n\n");
+                qDebug() << "data " << data;
 
                 if (!key.isNull()) {
                     QSqlQuery query(db);
+                    QString sql = "SELECT id FROM KEYS where key_id = '%1'";
 
-                    //QString sql = "SELECT ALL FROM KEYS WHERE key_id";
-
-                    /*sql = "INSERT INTO KEYS (key, key_id, public) VALUES ('%1', '%2', %3)";
-                    QString keyData = key.toString();
-                    bool isPublic = keyData.contains("public", Qt::CaseInsensitive);
-                    sql = sql.arg(keyData).arg(key.keyId()).arg(isPublic);*/
+                    if (!query.next()) {
+                        sql = "INSERT INTO KEYS (key, key_id, public) VALUES ('%1', '%2', %3)";
+                        QString keyData = QString::fromLocal8Bit(data);
+                        bool isPublic = keyData.contains("public", Qt::CaseInsensitive);
+                        sql = sql.arg(keyData).arg(key.keyId()).arg(isPublic);
+                        query.exec(sql);
+                    } else
+                        qDebug() << "Key already imported";
                 }
-			}
-			else {
-				qWarning() << "File" << info.absoluteFilePath() << "not exists";
-				break;
-			}
+            }
+
+            else {
+                qWarning() << "File" << info.absoluteFilePath() << "not exists";
+                break;
+            }
         }
 
         return EXIT_CODE_SUCCESS;
