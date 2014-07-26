@@ -13,11 +13,25 @@
 #include <QDebug>
 #include <algorithm>
 #include <memory>
+#include <QtCrypto>
+
+#include <windows.h>
+
+// #pragma comment "C:\work\qca\bin\Release\qca.dll"
 
 Gpgezy::Gpgezy(QObject *parent) :
     QObject(parent), factory_( new ActionsFactory() )
 {
-    createWorkingEnvirnment();
+	qDebug() << "Hello";
+	QCA::PGPKey key("C:\\work\\20140715_Client_CF8EB0A_public.asc");	
+	OutputDebugString(L"\n\n");
+
+	if (key.isNull())
+		qDebug() << ("Null\n");
+	else
+		qDebug()<< ("Not null\n\n");
+
+	OutputDebugString(L"\n\n");
 }
 
 void Gpgezy::showUsage()

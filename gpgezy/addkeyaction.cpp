@@ -8,6 +8,8 @@
 #include <QtCrypto>
 #include "constants.h"
 
+#include <Windows.h>
+
 AddKeyAction::AddKeyAction()
 {
 }
@@ -23,18 +25,30 @@ int AddKeyAction::execute(const QStringList& args)
 
             if (info.exists()) {
                 QCA::PGPKey key(info.absoluteFilePath().toLatin1());
+				OutputDebugString(L"\n\n");
+
+				if (key.isNull())
+					OutputDebugString(L"key is null == true");
+				else
+					OutputDebugString(L"key is null == false");
+
+				OutputDebugString(L"\n\n");
 
                 if (!key.isNull()) {
                     QSqlQuery query(db);
-                    QString sql = "SELECT ALL FROM KEYS WHERE key_id";
+
+                    //QString sql = "SELECT ALL FROM KEYS WHERE key_id";
 
                     /*sql = "INSERT INTO KEYS (key, key_id, public) VALUES ('%1', '%2', %3)";
                     QString keyData = key.toString();
                     bool isPublic = keyData.contains("public", Qt::CaseInsensitive);
                     sql = sql.arg(keyData).arg(key.keyId()).arg(isPublic);*/
                 }
-            } else
-                break;
+			}
+			else {
+				qWarning() << "File" << info.absoluteFilePath() << "not exists";
+				break;
+			}
         }
 
         return EXIT_CODE_SUCCESS;
