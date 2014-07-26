@@ -2,7 +2,6 @@
 #include "constants.h"
 #include <QFileInfo>
 #include <QStringList>
-#include <QtCrypto>
 #include <QDebug>
 
 EncryptCommand::EncryptCommand()

@@ -4,10 +4,10 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QSqlRecord>
-#include <QtCrypto>
-#include <QFile>
 #include <QDebug>
 #include "constants.h"
+#include "pgpprocess.h"
+#include "pgpkey.h"
 
 AddKeyAction::AddKeyAction()
 {
@@ -22,15 +22,12 @@ int AddKeyAction::execute(const QStringList& args)
         for (QStringList::const_iterator current = ++ args.begin(); current != args.end(); ++ current) {
             QFileInfo info(*current);
 
-            if (info.exists()) {
-                QFile file(info.absoluteFilePath());
-                file.open(QIODevice::ReadOnly | QIODevice::Text);
-                QByteArray data = file.readAll();
-                QCA::PGPKey key = QCA::PGPKey::fromArray(data);
-
-                qDebug() << "data " << data;
-
-                if (!key.isNull()) {
+            if (info.exists()) {				
+				PGPProcess process;
+				PGPKey key;
+				process.readKeyFromFile(*current, key);
+               
+                /*if (!key.isNull()) {
                     QSqlQuery query(db);
                     QString sql = "SELECT id FROM KEYS where key_id = '%1'";
 
@@ -42,7 +39,7 @@ int AddKeyAction::execute(const QStringList& args)
                         query.exec(sql);
                     } else
                         qDebug() << "Key already imported";
-                }
+                }*/
             }
 
             else {

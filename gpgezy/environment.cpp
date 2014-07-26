@@ -4,10 +4,15 @@
 
 #ifndef Q_OS_WIN
 #include <cstdlib>
+#else
+#include <Windows.h>
+#define VARIABLE_BUFFER_SIZE MAX_PATH
 #endif
 
 bool Environment::get(const QString& variable, QString &result)
 {
+    result.clear();
+
 #ifndef Q_OS_WIN
     char* res = getenv(variable.toLatin1().constData());
 
@@ -15,21 +20,49 @@ bool Environment::get(const QString& variable, QString &result)
         result = res;
         return true;
     }
+#else
+
+    LPTSTR value = new TCHAR[MAX_PATH];
+
+#ifdef UNICODE
+    const DWORD value_size = ::GetEnvironmentVariable(variable.toStdWString().c_str(), value, MAX_PATH);
+#else
+    const DWORD value_size = ::GetEnvironmentVariable(variable.toStdString().c_str(), value, MAX_PATH);
 #endif
 
-    return false;
+    if (value_size > 0) {
+#ifdef UNICODE
+        result = QString::fromWCharArray(value, value_size);
+#else
+        result = QString::fromLocal8Bit(value, value_size);
+#endif
+    }
+#endif
+
+    delete[] value;
+
+    return !result.isEmpty();
 }
 
 QString Environment::getDataDirectory()
 {
-#ifndef Q_OS_WIN
-    QString home;
+    QString base;
+    bool success = false;
 
-    if (get("HOME", home)) {
-        home += QDir::separator() + '.' + qApp->applicationName();
-        return home;
-    }
+#ifdef Q_OS_WIN
+    success = get("APPDATA", base);
+#else
+    success = get(L"HOME", base);
 #endif
+
+    if (success) {
+        base += QDir::separator()
+#ifndef Q_OS_WIN
+            + '.'
+#endif
+            + qApp->applicationName();
+        return base;
+    }
 
     return QString();
 }

@@ -13,8 +13,6 @@
 #include <QDebug>
 #include <algorithm>
 #include <memory>
-#include <QtCrypto>
-
 
 Gpgezy::Gpgezy(QObject *parent) :
     QObject(parent), factory_( new ActionsFactory() )
@@ -75,7 +73,7 @@ void Gpgezy::createWorkingEnvirnment()
 
             if (!dir.mkdir(dataDir)) {
 
-                qWarning() << tr("can't create data directory");
+                qWarning() << "can't create data directory";
                 finishWork(EXIT_CODE_DATA_DIR_IS_EMPTY);
             }
         }
@@ -95,15 +93,15 @@ void Gpgezy::createWorkingEnvirnment()
             if (db.open())
                 createTables(db);
             else {
-                qWarning() << tr("can't open database");
+                qWarning() << "can't open database";
                 finishWork(EXIT_CODEC_DB_OPENING_FAILED);
             }
         } else {
-            qWarning() << tr("could not load database driver");
+            qWarning() << "could not load database driver";
             finishWork(EXIT_CODE_DB_DRIVER_IS_NOT_LOADED);
         }
     } else {
-        qWarning() << tr("data base file path is empty");
+        qWarning() << "data base file path is empty";
         finishWork(EXIT_CODE_DB_FILE_PATH_IS_EMPTY);
     }
 }
