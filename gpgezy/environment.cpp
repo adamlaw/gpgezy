@@ -37,9 +37,9 @@ bool Environment::get(const QString& variable, QString &result)
         result = QString::fromLocal8Bit(value, value_size);
 #endif
     }
-#endif
 
     delete[] value;
+#endif
 
     return !result.isEmpty();
 }
@@ -52,7 +52,7 @@ QString Environment::getDataDirectory()
 #ifdef Q_OS_WIN
     success = get("APPDATA", base);
 #else
-    success = get(L"HOME", base);
+    success = get("HOME", base);
 #endif
 
     if (success) {

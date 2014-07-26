@@ -9,15 +9,16 @@ public:
     friend class PGPProcess;
 
     PGPKey();
-    QString uid() const;
+    PGPKey(const QString& fileName);
+    QString toByteArray() const;
     bool isPublic() const { return public_; }
     bool isPrivate() const { return !public_; }
     QString keyId() const {  return key_id_; }
-    QStringList uids() const { return uids_; }
+    bool isNull() const { return key_id_.isEmpty(); }
 private:
     bool public_;
     QString key_id_;
-    QStringList uids_;
+    QString fileName_;
 };
 
 #endif // PGPKEY_H

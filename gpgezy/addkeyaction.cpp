@@ -6,7 +6,6 @@
 #include <QSqlRecord>
 #include <QDebug>
 #include "constants.h"
-#include "pgpprocess.h"
 #include "pgpkey.h"
 
 AddKeyAction::AddKeyAction()
@@ -22,24 +21,21 @@ int AddKeyAction::execute(const QStringList& args)
         for (QStringList::const_iterator current = ++ args.begin(); current != args.end(); ++ current) {
             QFileInfo info(*current);
 
-            if (info.exists()) {				
-				PGPProcess process;
-				PGPKey key;
-				process.readKeyFromFile(*current, key);
-               
-                /*if (!key.isNull()) {
+            if (info.exists()) {
+                PGPKey key(*current);
+
+                if (!key.isNull()) {
                     QSqlQuery query(db);
-                    QString sql = "SELECT id FROM KEYS where key_id = '%1'";
+                    QString sql = "SELECT id FROM KEYS where key = '%1'";
+                    query.exec(sql.arg(key.toByteArray()));
 
                     if (!query.next()) {
                         sql = "INSERT INTO KEYS (key, key_id, public) VALUES ('%1', '%2', %3)";
-                        QString keyData = QString::fromLocal8Bit(data);
-                        bool isPublic = keyData.contains("public", Qt::CaseInsensitive);
-                        sql = sql.arg(keyData).arg(key.keyId()).arg(isPublic);
+                        sql = sql.arg(key.toByteArray()).arg(key.keyId()).arg(key.isPublic());
                         query.exec(sql);
                     } else
                         qDebug() << "Key already imported";
-                }*/
+                }
             }
 
             else {

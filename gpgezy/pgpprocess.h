@@ -17,6 +17,7 @@ public Q_SLOTS:
     void readKeyFromFile(const QString& fileName, PGPKey& key);
 private:
     void initProcess();
+    void parseKeyInfo(const QString& info, PGPKey &key);
 
     QPointer<QProcess> process_;
 };
