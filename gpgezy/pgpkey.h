@@ -15,10 +15,12 @@ public:
     bool isPrivate() const { return !public_; }
     QString keyId() const {  return key_id_; }
     bool isNull() const { return key_id_.isEmpty(); }
+    QString uid() const { return uid_ ; }
 private:
     bool public_;
     QString key_id_;
     QString fileName_;
+    QString uid_;
 };
 
 #endif // PGPKEY_H

@@ -5,9 +5,16 @@ namespace constants {
 
 namespace {
 
-const char* commandToken = "--";
-const char* databaseDriver = "QSQLITE";
-const char* dbConnectionName = "gpgezy_connection";
+#ifdef __GNUC__
+#define __attr_unused__ __attribute__((unused))
+#else
+#define __attr_unused__
+#endif
+
+
+const char* commandToken __attr_unused__ = "--";
+const char* databaseDriver __attr_unused__ = "QSQLITE";
+const char* dbConnectionName __attr_unused__ = "gpgezy_connection";
 }
 }
 
