@@ -1,15 +1,13 @@
 #ifndef ABSTRACTCOMMANDLINEACTION_H
 #define ABSTRACTCOMMANDLINEACTION_H
 
-#include <QString>
-
-class QStringList;
+#include <QStringList>
 
 class AbstractCommandLineAction
 {
 public:
     explicit AbstractCommandLineAction();
-    QString keyFileById(const QString& id);
+    QStringList keysById(const QString& key_id);
     virtual int execute(const QStringList& args) = 0;
 };
 

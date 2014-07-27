@@ -29,11 +29,11 @@ void PGPProcess::initProcess()
         process_->setProcessChannelMode(QProcess::MergedChannels);
     }
 }
-
+// publics slots
 void PGPProcess::encryptFile(const QString& fileName, const PGPKey& _public, const PGPKey& _private)
 {
     QStringList args;
-    args << "--no-default-keyring" << "--always-trust";
+    args << "--armor" << "--no-default-keyring" << "--always-trust";
 
     if  (!_public.isNull())
         args << "--keyring";
@@ -59,13 +59,6 @@ void PGPProcess::encryptFile(const QString& fileName, const PGPKey& _public, con
     args << "--output" << fileName + ".gpg" << "--encrypt" << fileName;
     qDebug() << "options" << args;
 
-    QString s;
-
-    Q_FOREACH (QString str, args) {
-        s += " " + str;
-    }
-
-    qDebug() << s;
     initProcess();
     process_->start(PROGRAM_NAME, args);
     process_->waitForReadyRead();
@@ -90,7 +83,9 @@ void PGPProcess::parseKeyInfo(const QString& info, PGPKey& key)
 
     while (++ current != str.end()) {
 
-        if (*current == '/') {
+        if (key.key_id_.isEmpty() && *current == '/') {
+
+			++ current;
 
             while (!current->isSpace())
                 key.key_id_.append(*current ++);

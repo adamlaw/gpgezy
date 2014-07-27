@@ -1,5 +1,5 @@
 CREATE TABLE KEYS (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    key TEXT,
+    key_content TEXT,
     key_id CHAR(256),
     public INTEGER )

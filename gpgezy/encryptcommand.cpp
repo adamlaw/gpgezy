@@ -19,20 +19,23 @@ int EncryptCommand::execute(const QStringList& args)
         while (iter != args.end()) {
 
             if (iter->startsWith(constants::commandToken)) {
-                QString str = QString(constants::commandToken) + "key-name";
+                QString str = QString(constants::commandToken) + "keyname";
 
                 if (*iter == str) {
                     ++ iter;
 
                     if (iter != args.end()) {
                         if (QFileInfo(*iter).exists())
-                            key_file = *iter;
-                        else {
-                            // TODO: Load key from database
-                        }
+                            key_file = *iter;                        
                     } else
                         break;
                 }
+
+				else if (*iter == QString(constants::commandToken) + "keyid") {
+					++ iter;
+					QStringList keys = keysById(*iter);
+					qDebug() << keys;
+				}
             }
 
             else {

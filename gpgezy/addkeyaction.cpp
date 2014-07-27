@@ -26,13 +26,17 @@ int AddKeyAction::execute(const QStringList& args)
 
                 if (!key.isNull()) {
                     QSqlQuery query(db);
-                    QString sql = "SELECT id FROM KEYS where key = '%1'";
+                    QString sql = "SELECT id FROM KEYS where key_content = '%1'";
                     query.exec(sql.arg(key.toByteArray()));
 
                     if (!query.next()) {
-                        sql = "INSERT INTO KEYS (key, key_id, public) VALUES ('%1', '%2', %3)";
+                        sql = "INSERT INTO KEYS (key_content, key_id, public) VALUES ('%1', '%2', %3)";
                         sql = sql.arg(key.toByteArray()).arg(key.keyId()).arg(key.isPublic());
-                        query.exec(sql);
+						
+						if (query.exec(sql))
+							qDebug() << "Added key " << key.keyId();
+						else
+							qWarning() << "It's a bug!";
                     } else
                         qDebug() << "Key already imported";
                 }
