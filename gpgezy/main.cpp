@@ -6,7 +6,8 @@
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication a(argc, argv);    
+    QCoreApplication a(argc, argv);
+    // TODO: Check for gpg presence
     a.setApplicationName("GPGEzy");
     Gpgezy* gpgezy = new Gpgezy(&a);;
     QTimer::singleShot(0, gpgezy, SLOT(start()));

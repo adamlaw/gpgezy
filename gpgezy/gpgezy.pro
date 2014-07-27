@@ -12,9 +12,19 @@ CONFIG   -= app_bundle
 
 TEMPLATE = app
 
+unix {
+INCLUDEPATH += /home/dmitry/etc/src/qca/include/QtCrypto \
+               /home/dmitry/etc/src/qca/ \
+               qca-gnupg \
+               qca-gnupg/gpgproc
+LIBS += -L/home/dmitry/etc/src/qca/lib/
+}
+
 win32 {
 CONFIG += console
 }
+
+LIBS += -lqca
 
 SOURCES += main.cpp \
     gpgezy.cpp \
@@ -25,7 +35,11 @@ SOURCES += main.cpp \
     encryptcommand.cpp \
     decryptcommand.cpp \
     pgpkey.cpp \
-    pgpprocess.cpp
+    pgpprocess.cpp \
+    qca-gnupg/qca-gnupg.cpp \
+    qca-gnupg/gpgop.cpp \
+    qca-gnupg/gpgproc/gpgproc.cpp \
+    qca-gnupg/gpgproc/sprocess.cpp
 
 HEADERS += \
     gpgezy.h \
@@ -37,7 +51,10 @@ HEADERS += \
     encryptcommand.h \
     decryptcommand.h \
     pgpkey.h \
-    pgpprocess.h
+    pgpprocess.h \
+    qca-gnupg/gpgop.h \
+    qca-gnupg/gpgproc/gpgproc.h \
+    qca-gnupg/gpgproc/sprocess.h
 
 INCLUDEPATH += .
 MOC_DIR = build/moc
@@ -50,5 +67,6 @@ RESOURCES += \
 
 OTHER_FILES += \
     database.sql \
-    files_table.sql
+    files_table.sql \
+    qca/README
 

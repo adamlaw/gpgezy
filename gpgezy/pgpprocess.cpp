@@ -16,23 +16,20 @@ PGPProcess::PGPProcess(QObject *parent) :
 void PGPProcess::readKeyFromFile(const QString &fileName, PGPKey& key)
 {
     initProcess();
-    process_->start(PROGRAM_NAME, QStringList() << fileName);
+    QStringList args;
+    args << fileName;
+    setGeneralArgs(args);
+    process_->start(PROGRAM_NAME, args);
     process_->waitForReadyRead();
     process_->waitForFinished();
     parseKeyInfo(QString::fromLocal8Bit(process_->readAll()), key);
 }
 
-void PGPProcess::initProcess()
-{
-    if (process_.isNull()) {
-        process_ = new QProcess(this);
-        process_->setProcessChannelMode(QProcess::MergedChannels);
-    }
-}
-// publics slots
+// public slots
 void PGPProcess::encryptFile(const QString& fileName, const PGPKey& _public, const PGPKey& _private)
 {
     QStringList args;
+    setGeneralArgs(args);
     args << "--armor" << "--no-default-keyring" << "--always-trust";
 
     if  (!_public.isNull())
@@ -40,10 +37,6 @@ void PGPProcess::encryptFile(const QString& fileName, const PGPKey& _public, con
 
     if (!_public.fileName_.isEmpty())
         args << _public.fileName_;
-
-    else {
-        // TODO: create temprary file
-    }
 
     if (!_private.isNull())
         args << "--secret-keyring" << _private.fileName_;
@@ -67,6 +60,13 @@ void PGPProcess::encryptFile(const QString& fileName, const PGPKey& _public, con
 }
 
 // Private members
+void PGPProcess::initProcess()
+{
+    if (process_.isNull()) {
+        process_ = new QProcess(this);
+        process_->setProcessChannelMode(QProcess::MergedChannels);
+    }
+}
 
 void PGPProcess::parseKeyInfo(const QString& info, PGPKey& key)
 {
@@ -85,7 +85,7 @@ void PGPProcess::parseKeyInfo(const QString& info, PGPKey& key)
 
         if (key.key_id_.isEmpty() && *current == '/') {
 
-			++ current;
+            ++ current;
 
             while (!current->isSpace())
                 key.key_id_.append(*current ++);
@@ -105,4 +105,9 @@ void PGPProcess::parseKeyInfo(const QString& info, PGPKey& key)
 
     if (key.uid_.isEmpty())
         qDebug() << "Can't parse uid!";
+}
+
+void PGPProcess::setGeneralArgs(QStringList& list)
+{
+    //list << "--no-tty";
 }

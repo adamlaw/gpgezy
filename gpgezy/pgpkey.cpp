@@ -20,11 +20,16 @@ QString PGPKey::toByteArray() const
 
         QFile file(fileName_);
 
-        if (file.open(QIODevice::ReadOnly | QIODevice::Text))
+        if (file.open(QIODevice::ReadOnly))
             return file.readAll();
         else
             qWarning() << "PGPKey: can't open file " << fileName_ << " for read";
     }
 
     return QByteArray();
+}
+
+void PGPKey::loadFromArray(const QByteArray &data)
+{
+
 }
