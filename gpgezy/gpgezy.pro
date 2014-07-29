@@ -4,11 +4,12 @@
 #
 #-------------------------------------------------
 
-QT       += core sql
+QT       += core
 QT       -= gui
 
 TARGET = gpgezy
 CONFIG   -= app_bundle
+CONFIG   += crypto
 
 TEMPLATE = app
 
@@ -33,13 +34,7 @@ SOURCES += main.cpp \
     addkeyaction.cpp \
     environment.cpp \
     encryptcommand.cpp \
-    decryptcommand.cpp \
-    pgpkey.cpp \
-    pgpprocess.cpp \
-    qca-gnupg/qca-gnupg.cpp \
-    qca-gnupg/gpgop.cpp \
-    qca-gnupg/gpgproc/gpgproc.cpp \
-    qca-gnupg/gpgproc/sprocess.cpp
+    decryptcommand.cpp
 
 HEADERS += \
     gpgezy.h \
@@ -49,12 +44,7 @@ HEADERS += \
     constants.h \
     environment.h \
     encryptcommand.h \
-    decryptcommand.h \
-    pgpkey.h \
-    pgpprocess.h \
-    qca-gnupg/gpgop.h \
-    qca-gnupg/gpgproc/gpgproc.h \
-    qca-gnupg/gpgproc/sprocess.h
+    decryptcommand.h
 
 INCLUDEPATH += .
 MOC_DIR = build/moc

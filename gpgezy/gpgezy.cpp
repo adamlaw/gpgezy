@@ -6,8 +6,8 @@
 #include "abstractcommandlineaction.h"
 #include "constants.h"
 #include "environment.h"
-#include <QSqlDatabase>
-#include <QSqlQuery>
+//#include <QSqlDatabase>
+//#include <QSqlQuery>
 #include <QDir>
 #include <QFile>
 #include <QDebug>
@@ -17,7 +17,7 @@
 Gpgezy::Gpgezy(QObject *parent) :
     QObject(parent), factory_( new ActionsFactory() )
 {
-    createWorkingEnvirnment();
+    //createWorkingEnvirnment();
 }
 
 void Gpgezy::showUsage()
@@ -62,7 +62,7 @@ void Gpgezy::finishWork(int exitCode)
     exit(exitCode);
 }
 
-void Gpgezy::createWorkingEnvirnment()
+/*void Gpgezy::createWorkingEnvirnment()
 {
     QString dataDir = Environment::getDataDirectory();
 
@@ -119,3 +119,4 @@ void Gpgezy::showWarningAndFinish(const QString& warning, int exitCode)
     qWarning() << warning;
     finishWork(exitCode);
 }
+*/

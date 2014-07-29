@@ -18,9 +18,10 @@ public Q_SLOTS:
 protected Q_SLOTS:
     virtual void finishWork(int exitCode = 0);
 private:
+/*private:
     void createWorkingEnvirnment();
     void createTables(QSqlDatabase& db);
-    void showWarningAndFinish(const QString& warning, int exitCode);
+    void showWarningAndFinish(const QString& warning, int exitCode);*/
 
     std::auto_ptr<ActionsFactory> factory_;
 };

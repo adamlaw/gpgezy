@@ -1,7 +1,7 @@
 #include "abstractcommandlineaction.h"
-#include <QSqlDatabase>
-#include <QSqlQuery>
-#include <QSqlRecord>
+//#include <QSqlDatabase>
+//#include <QSqlQuery>
+//#include <QSqlRecord>
 #include "constants.h"
 #include <QDebug>
 
@@ -11,7 +11,7 @@ AbstractCommandLineAction::AbstractCommandLineAction()
 
 QStringList AbstractCommandLineAction::keysById(const QString& key_id)
 {
-    QSqlDatabase db = QSqlDatabase::database(constants::dbConnectionName);
+    /*QSqlDatabase db = QSqlDatabase::database(constants::dbConnectionName);
     QSqlQuery q(db);
     QString sql = "SELECT key_content FROM KEYS where key_id = '%1'";
     QStringList res;
@@ -26,5 +26,6 @@ QStringList AbstractCommandLineAction::keysById(const QString& key_id)
     else
         qWarning() << "It's a bug!";
 
-    return res;
+    return res;*/
+    return QStringList();
 }

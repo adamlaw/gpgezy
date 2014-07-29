@@ -3,8 +3,6 @@
 #include <QFileInfo>
 #include <QStringList>
 #include <QDebug>
-#include "pgpprocess.h"
-#include "pgpkey.h"
 
 EncryptCommand::EncryptCommand()
 {}
@@ -63,13 +61,6 @@ int EncryptCommand::execute(const QStringList& args)
 
                 for (QStringList::const_iterator current = files.begin(); current != files.end(); ++ current) {
 
-                    PGPKey key(key_file);
-                    PGPProcess process;
-
-                    if (key.isPublic())
-                        process.encryptFile(*current, key, PGPKey());
-                    else
-                        process.encryptFile(*current, PGPKey(), key);
                 }
             } else
                 qDebug() << "You should provide at least one file, please try --help";

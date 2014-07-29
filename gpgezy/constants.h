@@ -1,6 +1,10 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
+#include <QtCrypto>
+
+Q_DECLARE_METATYPE(QCA::KeyStoreEntry)
+
 namespace constants {
 
 namespace {
