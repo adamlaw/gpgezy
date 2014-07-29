@@ -21,19 +21,21 @@ int AddKeyAction::execute(const QStringList& args)
             QFileInfo info(*current);
 
             if (info.exists()) {
-                // QCA::PGPKey key(*current);
-                qDebug() << *current;
-                //qDebug() << "key is null " << key.isNull();
-                QCA::KeyStoreManager::start();
-                QCA::KeyStoreManager ksm;
-                ksm.waitForBusyFinished();
-                QCA::KeyStore pgpks( QString("qca-gnupg"), &ksm );
+                QCA::PGPKey key(*current);
 
-                Q_FOREACH(const QCA::KeyStoreEntry kse, pgpks.entryList()) {
-                    QString text = kse.name()+" "+kse.id();
-                    QVariant v; v.setValue(kse);
-                    qDebug() << "text == " << text;
-                }
+                if (!key.isNull()) {
+                    QCA::KeyStoreManager::start();
+                    QCA::KeyStoreManager ksm;
+                    //ksm.waitForBusyFinished();
+                    //QCA::KeyStore pgpks( QString("qca-gnupg"), &ksm );
+
+                    /*Q_FOREACH(QCA::KeyStoreEntry kse, pgpks.entryList()) {
+                        QString text = kse.name()+" "+kse.id();
+                        QVariant v; v.setValue(kse);
+                        qDebug() << "text == " << text;
+                    }*/
+                } else
+                    qDebug() << "Key is null!";
             }
 
             else {
