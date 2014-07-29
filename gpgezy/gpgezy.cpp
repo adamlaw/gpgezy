@@ -2,121 +2,87 @@
 #include <QCoreApplication>
 #include <QStringList>
 #include <QFileInfo>
-#include "actionsfactory.h"
-#include "abstractcommandlineaction.h"
 #include "constants.h"
 #include "environment.h"
-//#include <QSqlDatabase>
-//#include <QSqlQuery>
 #include <QDir>
 #include <QFile>
 #include <QDebug>
 #include <algorithm>
+#include <QtCore>
 #include <memory>
 
 Gpgezy::Gpgezy(QObject *parent) :
-    QObject(parent), factory_( new ActionsFactory() )
+    QObject(parent), spMasterManager_(new QCA::KeyStoreManager())
 {
-    //createWorkingEnvirnment();
 }
 
 void Gpgezy::showUsage()
 {
+        // TODO
+}
 
+void Gpgezy::doWork(const QStringList& cmdline)
+{
+
+    for (QStringList::const_iterator current = cmdline.begin(); current != cmdline.end(); ++ current) {
+
+        // --addkey
+        if (*current == "--addkey") {
+            QString fileName = * ++ current;
+
+            if (current == cmdline.end() || fileName.isEmpty()) {
+                showUsage();
+                setReturnStatus(EXIT_CODE_INVALID_ARGUMENT);
+            }
+
+            if (!QFileInfo(fileName).exists()) {
+                qDebug() << "File " << fileName << "not exists";
+                setReturnStatus(EXIT_CODE_INVALID_ARGUMENT);
+            }
+
+            QCA::PGPKey key(fileName);
+
+            if (key.isNull()) {
+                qDebug() << "Key is null";
+                setReturnStatus(EXIT_CODE_INVALID_ARGUMENT);
+            }
+
+            spMasterManager_->start();
+            std::auto_ptr<QCA::KeyStoreManager> sp_ksm( new QCA::KeyStoreManager());
+            sp_ksm->waitForBusyFinished();
+            QCA::KeyStore key_store( QString("qca-gnupg"), sp_ksm.get() );
+            QString str = key_store.writeEntry(key);
+
+            if (!str.isEmpty())
+                qDebug() << "Key "  << str << "successfully added";
+
+
+            foreach(const QCA::KeyStoreEntry store_key,  key_store.entryList()) {
+
+                if (store_key.id() == key.keyId()) {
+                    qDebug() << "Key already added";
+                    break;
+                }
+
+            }
+
+            setReturnStatus(EXIT_CODE_SUCCESS);
+        } // --addkey
+    }
 }
 
 void Gpgezy::start()
 {
-    QStringList args = qApp->arguments();
-
-    if (args.length() > 1) {
-        // ignore app executable
-        QStringList::iterator current = ++ args.begin();
-
-        while (current != args.end()) {
-
-            if (current->startsWith(constants::commandToken)) {
-                std::auto_ptr<AbstractCommandLineAction> action(factory_->createAction(*current));
-
-                if (action.get() != NULL) {
-                    QStringList actionArgs;
-                    // first arg is command name
-                    std::copy(current, args.end(), std::back_inserter(actionArgs));
-                    finishWork(action->execute(actionArgs));
-                } else {
-                    qDebug() << tr("Unrecognized command");
-                    finishWork(EXIT_CODE_UNRECOGNIZED_COMMAND);
-                }
-            }
-
-            ++ current;
-        }
-    } else {
-        showUsage();
-        finishWork(EXIT_CODE_CMD_LINE_IS_EMPTY);
-    }
+    doWork(qApp->arguments());
 }
+
 
 void Gpgezy::finishWork(int exitCode)
 {
     exit(exitCode);
 }
 
-/*void Gpgezy::createWorkingEnvirnment()
+void Gpgezy::setReturnStatus(int status)
 {
-    QString dataDir = Environment::getDataDirectory();
-
-    if (!dataDir.isEmpty()) {
-        QDir dir(dataDir);
-
-        if (!dir.exists(dataDir)) {
-
-            if (!dir.mkdir(dataDir)) {
-
-                qWarning() << "can't create data directory";
-                finishWork(EXIT_CODE_DATA_DIR_IS_EMPTY);
-            }
-        }
-    } else {
-        qWarning() << tr("data directory is empty!");
-        finishWork(EXIT_CODE_DATA_DIR_IS_EMPTY);
-    }
-
-    QString dbFilePath = Environment::getDatabaseFilePath();
-
-    if (!dbFilePath.isEmpty()) {
-        QSqlDatabase db = QSqlDatabase::addDatabase(constants::databaseDriver, constants::dbConnectionName);
-
-        if (db.isValid()) {
-            db.setDatabaseName(dbFilePath);
-
-            if (db.open())
-                createTables(db);
-            else {
-                qWarning() << "can't open database";
-                finishWork(EXIT_CODEC_DB_OPENING_FAILED);
-            }
-        } else {
-            qWarning() << "could not load database driver";
-            finishWork(EXIT_CODE_DB_DRIVER_IS_NOT_LOADED);
-        }
-    } else {
-        qWarning() << "data base file path is empty";
-        finishWork(EXIT_CODE_DB_FILE_PATH_IS_EMPTY);
-    }
+    exit(status);
 }
-
-void Gpgezy::createTables(QSqlDatabase &db)
-{
-    QFile file(":/files/keys_table.sql");
-    file.open(QIODevice::ReadOnly | QIODevice::Text);
-    QSqlQuery query(db);
-    query.exec(file.readAll());
-}
-
-void Gpgezy::showWarningAndFinish(const QString& warning, int exitCode)
-{
-    qWarning() << warning;
-    finishWork(exitCode);
-}
-*/

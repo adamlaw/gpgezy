@@ -1,16 +1,15 @@
 #include <QCoreApplication>
-#include <QTimer>
-#include <QDebug>
 #include "gpgezy.h"
 #include "constants.h"
-#include <QTextCodec>
 #include <QtCrypto>
+#include <QDebug>
+#include <QTimer>
 
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
     QCA::Initializer init;
+    Q_UNUSED(init)
 
     if (!QCA::isSupported("openpgp")) {
         qDebug() << "OPENPGP is not supported!";
@@ -19,6 +18,7 @@ int main(int argc, char *argv[])
 
     a.setApplicationName("GPGEzy");
     Gpgezy* gpgezy = new Gpgezy(&a);;
-    QTimer::singleShot(0, gpgezy, SLOT(start()));
+    QTimer::singleShot(2, gpgezy, SLOT(start()));
+    //QMetaObject::invokeMethod(gpgezy, "doWork", Q_ARG(QStringList, qApp->arguments()));
     return a.exec();
 }

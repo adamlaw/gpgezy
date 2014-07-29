@@ -29,22 +29,12 @@ LIBS += -lqca
 
 SOURCES += main.cpp \
     gpgezy.cpp \
-    abstractcommandlineaction.cpp \
-    actionsfactory.cpp \
-    addkeyaction.cpp \
-    environment.cpp \
-    encryptcommand.cpp \
-    decryptcommand.cpp
+    environment.cpp
 
 HEADERS += \
     gpgezy.h \
-    abstractcommandlineaction.h \
-    actionsfactory.h \
-    addkeyaction.h \
     constants.h \
-    environment.h \
-    encryptcommand.h \
-    decryptcommand.h
+    environment.h
 
 INCLUDEPATH += .
 MOC_DIR = build/moc
