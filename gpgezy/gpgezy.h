@@ -12,12 +12,12 @@ public:
     explicit Gpgezy(QObject *parent = 0);
 public Q_SLOTS:
     void showUsage();
-    void doWork(const QStringList& cmdline);
+    void doWork(const QStringList& args);
     void start();
-protected Q_SLOTS:
-    virtual void finishWork(int exitCode = 0);
-    virtual void setReturnStatus(int status);
+    bool checkIsKeyFileKeyringAndAddifNot(const QString& fileName);
+    bool checkIsKeyInKeyringAndAddifNot(const QString& keyId);
 private:
+    void setReturnStatus(int status);
     std::auto_ptr<QCA::KeyStoreManager> spMasterManager_;
 };
 

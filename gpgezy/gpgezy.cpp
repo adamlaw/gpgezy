@@ -18,22 +18,28 @@ Gpgezy::Gpgezy(QObject *parent) :
 
 void Gpgezy::showUsage()
 {
-        // TODO
+    qDebug() << "—addkey key file name" << endl
+             << "—encrypt file names  --keyid your key id or --keyname key file name" << endl
+             << "—decrypt file names" << endl
+             << "—export-key --keyid your key id --keyname key file name, key type --public or --private" << endl
+             << "—create-key";
 }
 
-void Gpgezy::doWork(const QStringList& cmdline)
+void Gpgezy::doWork(const QStringList& args)
 {
 
-    for (QStringList::const_iterator current = cmdline.begin(); current != cmdline.end(); ++ current) {
+    for (QStringList::const_iterator current = args.begin(); current != args.end(); ++ current) {
 
-        // --addkey
         if (*current == "--addkey") {
-            QString fileName = * ++ current;
+            ++ current;
 
-            if (current == cmdline.end() || fileName.isEmpty()) {
-                showUsage();
+            if (current == args.end())
                 setReturnStatus(EXIT_CODE_INVALID_ARGUMENT);
-            }
+
+            QString fileName = *current;
+
+            if (current == args.end() || fileName.isEmpty())
+                setReturnStatus(EXIT_CODE_INVALID_ARGUMENT);
 
             if (!QFileInfo(fileName).exists()) {
                 qDebug() << "File " << fileName << "not exists";
@@ -47,28 +53,48 @@ void Gpgezy::doWork(const QStringList& cmdline)
                 setReturnStatus(EXIT_CODE_INVALID_ARGUMENT);
             }
 
-            spMasterManager_->start();
-            std::auto_ptr<QCA::KeyStoreManager> sp_ksm( new QCA::KeyStoreManager());
-            sp_ksm->waitForBusyFinished();
-            QCA::KeyStore key_store( QString("qca-gnupg"), sp_ksm.get() );
-            QString str = key_store.writeEntry(key);
-
-            if (!str.isEmpty())
-                qDebug() << "Key "  << str << "successfully added";
-
-
-            foreach(const QCA::KeyStoreEntry store_key,  key_store.entryList()) {
-
-                if (store_key.id() == key.keyId()) {
-                    qDebug() << "Key already added";
-                    break;
-                }
-
-            }
-
+            checkIsKeyFileKeyringAndAddifNot(fileName);
             setReturnStatus(EXIT_CODE_SUCCESS);
         } // --addkey
+
+        else if (*current == "—encrypt") {
+            ++ current;
+
+            if (current == args.end())
+                setReturnStatus(EXIT_CODE_INVALID_ARGUMENT);
+
+            QStringList files;
+
+            while (current ++ != args.end()) {
+
+                if (*current == "--keyname") {
+
+                }
+
+                else if (*current == "--keyid") {
+
+                }
+
+                else
+                    files << *current;
+            }
+
+        } // —encrypt
+
+        else if (*current == "--decrypt") {
+
+        } // --decrypt
+
+        else if (*current == "--export-key") {
+
+        } // --export-key
+
+        else if (*currnet == "--create-key") {
+
+        } // --create-key
     }
+
+    setReturnStatus(EXIT_CODE_INVALID_ARGUMENT);
 }
 
 void Gpgezy::start()
@@ -76,13 +102,45 @@ void Gpgezy::start()
     doWork(qApp->arguments());
 }
 
-
-void Gpgezy::finishWork(int exitCode)
+bool Gpgezy::checkIsKeyFileKeyringAndAddifNot(const QString& fileName)
 {
-    exit(exitCode);
+    QCA::PGPKey key(fileName);
+
+    if (!key.isNull())
+        return checkIsKeyInKeyringAndAddifNot(key.keyId());
+
+    return false;
 }
+
+bool Gpgezy::checkIsKeyInKeyringAndAddifNot(const QString& keyId)
+{
+    spMasterManager_->start();
+    std::auto_ptr<QCA::KeyStoreManager> sp_ksm( new QCA::KeyStoreManager());
+    sp_ksm->waitForBusyFinished();
+    QCA::KeyStore key_store( QString("qca-gnupg"), sp_ksm.get() );
+
+    foreach(const QCA::KeyStoreEntry store_key,  key_store.entryList()) {
+
+        if (store_key.id() == keyId) {
+            qDebug() << "Key already added";
+            return true;
+        }
+    }
+
+    QString str = key_store.writeEntry(QCA::PGPKey());
+
+    if (!str.isEmpty())
+        qDebug() << "Key "  << str << "successfully added";
+
+    return false;
+}
+
+// pivate members
 
 void Gpgezy::setReturnStatus(int status)
 {
+    if (status != EXIT_CODE_SUCCESS)
+        showUsage();
+
     exit(status);
 }
