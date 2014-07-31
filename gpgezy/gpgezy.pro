@@ -13,13 +13,13 @@ CONFIG   += crypto
 
 TEMPLATE = app
 
-unix {
-INCLUDEPATH += /home/dmitry/etc/src/qca/include/QtCrypto \
-               /home/dmitry/etc/src/qca/ \
-               qca-gnupg \
-               qca-gnupg/gpgproc
-LIBS += -L/home/dmitry/etc/src/qca/lib/
-}
+#unix {
+#INCLUDEPATH += /home/dmitry/etc/src/qca/include/QtCrypto \
+#               /home/dmitry/etc/src/qca/ \
+#               qca-gnupg \
+#               qca-gnupg/gpgproc
+#LIBS += -L/home/dmitry/etc/src/qca/lib/
+#}
 
 win32 {
 CONFIG += console

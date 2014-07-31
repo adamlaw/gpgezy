@@ -1,27 +1,6 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
-#include <QtCrypto>
-
-Q_DECLARE_METATYPE(QCA::KeyStoreEntry)
-
-namespace constants {
-
-namespace {
-
-#ifdef __GNUC__
-#define __attr_unused__ __attribute__((unused))
-#else
-#define __attr_unused__
-#endif
-
-
-const char* commandToken __attr_unused__ = "--";
-const char* databaseDriver __attr_unused__ = "QSQLITE";
-const char* dbConnectionName __attr_unused__ = "gpgezy_connection";
-}
-}
-
 #define EXIT_CODE_SUCCESS                 0
 #define EXIT_CODE_DATA_DIR_IS_EMPTY       1
 #define EXIT_CODE_DB_DRIVER_IS_NOT_LOADED 2
